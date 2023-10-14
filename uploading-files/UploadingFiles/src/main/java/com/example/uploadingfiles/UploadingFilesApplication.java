@@ -16,6 +16,7 @@ public class UploadingFilesApplication {
 		SpringApplication.run(UploadingFilesApplication.class, args);
 	}
 
+	// アプリケーション起動時に実行
 	@Bean
 	CommandLineRunner init(StorageService storageService){
 		return (args) -> {

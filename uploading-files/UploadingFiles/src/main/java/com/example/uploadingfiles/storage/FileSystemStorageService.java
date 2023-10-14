@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
@@ -23,7 +22,9 @@ public class FileSystemStorageService implements StorageService{
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties){
-        this.rootLocation = Paths.get(properties.getLocation());
+        // this.rootLocation = Path.of(properties.getLocation());
+        // Java11以降
+        this.rootLocation = Path.of(properties.getLocation());
     }
 
 
@@ -42,7 +43,16 @@ public class FileSystemStorageService implements StorageService{
             if(file.isEmpty()){
                 throw new StorageException("Failed to store empty file.");
             }
-            Path destinationFile = this.rootLocation.resolve(Paths.get(file.getOriginalFilename())).normalize().toAbsolutePath();
+            System.out.println("file.getOriginalFilename() : " + file.getOriginalFilename());
+            System.out.println("Path.of(file.getOriginalFilename()) : " + Path.of(file.getOriginalFilename()));
+            System.out.println("rootLocation.resolve(Path.of(file.getOriginalFilename())) : " + rootLocation.resolve(file.getOriginalFilename()));
+            System.out.println("rootLocation.resolve(Path.of(file.getOriginalFilename()))\n" +
+                    "                    .normalize() : " + rootLocation.resolve(Path.of(file.getOriginalFilename()))
+                    .normalize());
+            System.out.println("destinationFile : " + this.rootLocation.resolve(Path.of(file.getOriginalFilename()))
+                    .normalize().toAbsolutePath());
+            Path destinationFile = this.rootLocation.resolve(Path.of(file.getOriginalFilename()))
+                    .normalize().toAbsolutePath();
             if(!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())){
                 throw new StorageException("Cannot store file outside current directory");
             }
